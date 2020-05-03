@@ -72,21 +72,26 @@ def get_token_auth_header():
     return token
 
 
-'''
-@TODO implement check_permissions(permission, payload) method
-    @INPUTS
-        permission: string permission (i.e. 'post:drink')
-        payload: decoded jwt payload
-
-    it should raise an AuthError if permissions are not included in the payload
-        !!NOTE check your RBAC settings in Auth0
-    it should raise an AuthError if the requested permission string is not in the payload permissions array
-    return true otherwise
-'''
-
-
 def check_permissions(permission, payload):
-    raise Exception('Not Implemented')
+    """
+        raises an AuthError if permissions are not included in the payload
+                RBAC settings in Auth0 should be on
+        return true otherwise
+
+        :param permission: 'method:value' (string)
+        :param payload: decoded jwt payload
+        :return: True
+    """
+    error = {'code': '', 'description': ''}
+
+    if permission not in payload['permissions']:
+
+        # expects valid permissions
+        error['code'] = 'invalid_permission'
+        error['description'] = 'Access forbidden.'
+        raise AuthError(error, 403)
+
+    return True
 
 
 # !!NOTE urlopen has a common certificate error described here:
