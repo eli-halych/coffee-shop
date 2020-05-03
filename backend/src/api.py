@@ -49,6 +49,7 @@ def get_drinks():
     return jsonify(response)
 
 
+@requires_auth
 @app.route('/drinks-detail', methods=['GET'])
 def get_drinks_detail():
     """
@@ -76,6 +77,7 @@ def get_drinks_detail():
     return jsonify(response)
 
 
+@requires_auth
 @app.route('/drinks', methods=['POST'])
 def post_drink():
     """
@@ -116,6 +118,7 @@ def post_drink():
     return jsonify(response)
 
 
+@requires_auth
 @app.route('/drinks/<drink_id>', methods=['PATCH'])
 def update_drink(drink_id):
     """
@@ -164,6 +167,7 @@ def update_drink(drink_id):
     return jsonify(response)
 
 
+@requires_auth
 @app.route('/drinks/<drink_id>', methods=['DELETE'])
 def delete_drink(drink_id):
     """
