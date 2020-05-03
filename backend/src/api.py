@@ -155,7 +155,7 @@ def update_drink(drink_id):
 
         drink.update()
 
-        response['drinks'] = drink.long()
+        response['drinks'].append(drink.long())
         response['success'] = True
         response['drink_id'] = drink.id
     except:
