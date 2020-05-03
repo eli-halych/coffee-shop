@@ -31,7 +31,7 @@ def get_token_auth_header():
         it attempts to split bearer and the token
             it raises an AuthError if the header is malformed
 
-        :return:
+        :return: token
     """
     error = {
         'code': '',
@@ -89,23 +89,84 @@ def check_permissions(permission, payload):
     raise Exception('Not Implemented')
 
 
-'''
-@TODO implement verify_decode_jwt(token) method
-    @INPUTS
-        token: a json web token (string)
-
-    it should be an Auth0 token with key id (kid)
-    it should verify the token using Auth0 /.well-known/jwks.json
-    it should decode the payload from the token
-    it should validate the claims
-    return the decoded payload
-
-    !!NOTE urlopen has a common certificate error described here: https://stackoverflow.com/questions/50236117/scraping-ssl-certificate-verify-failed-error-for-http-en-wikipedia-org
-'''
-
-
+# !!NOTE urlopen has a common certificate error described here:
+# https://stackoverflow.com/questions/50236117/scraping-ssl-certificate-verify-failed-error-for-http-en-wikipedia-org
 def verify_decode_jwt(token):
-    raise Exception('Not Implemented')
+    """
+        it is an Auth0 token with key id (kid)
+        verifies the token using Auth0 /.well-known/jwks.json
+        decodes the payload from the token
+        validates the claims
+        return the decoded payload
+
+        :param token: a json web token (string)
+        :return: payload
+    """
+    error = {
+        'code': '',
+        'description': ''
+    }
+
+    jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
+    jwks = json.loads(jsonurl.read())
+    unverified_header = jwt.get_unverified_header(token)
+
+    rsa_key = {}
+    if 'kid' not in unverified_header:
+        # kid is expected
+        error['code'] = 'invalid_header'
+        error['description'] = 'Authorization malformed.'
+        raise AuthError(error, 401)
+
+    # key used to sign the token is expected
+    for key in jwks['keys']:
+        if key['kid'] == unverified_header['kid']:
+            rsa_key = {
+                'kty': key['kty'],
+                'kid': key['kid'],
+                'use': key['use'],
+                'n': key['n'],
+                'e': key['e']
+            }
+
+    if rsa_key:
+        try:
+            payload = jwt.decode(
+                token,
+                rsa_key,
+                algorithms=ALGORITHMS,
+                audience=API_AUDIENCE,
+                issuer='https://' + AUTH0_DOMAIN + '/'
+            )
+
+            # success
+            return payload
+
+        except jwt.ExpiredSignatureError:
+
+            # expired token
+            error['code'] = 'token_expired'
+            error['description'] = 'Token expired.'
+            raise AuthError(error, 401)
+
+        except jwt.JWTClaimsError:
+
+            # contents of the token is different than expected
+            error['code'] = 'invalid_claims'
+            error['description'] = 'Incorrect claims. Please, check the audience and issuer.'
+            raise AuthError(error, 401)
+
+        except Exception:
+
+            # unexpected errors
+            error['code'] = 'invalid_header'
+            error['description'] = 'Unable to parse authentication token.'
+            raise AuthError(error, 400)
+
+    # expected key not found
+    error['code'] = 'invalid_header'
+    error['description'] = 'Unable to find the appropriate key.'
+    raise AuthError(error, 400)
 
 
 '''
