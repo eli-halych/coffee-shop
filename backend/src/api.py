@@ -50,17 +50,16 @@ def get_drinks():
     return jsonify(response)
 
 
-'''
-    GET /drinks-detail
-        it requires the 'get:drinks-detail' permission
-        it contains the long data representation
-    returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
-        or appropriate status code indicating reason for failure
-'''
-
-
 @app.route('/drinks-detail', methods=['GET'])
 def get_drinks_detail():
+    """
+        GET /drinks-detail
+            it requires the 'get:drinks-detail' permission
+            it contains the long data representation
+        returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
+            or appropriate status code indicating reason for failure
+    """
+    
     response = {
         'drinks': [],
         'success': False
