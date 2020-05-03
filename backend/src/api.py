@@ -11,6 +11,7 @@ app = Flask(__name__)
 setup_db(app)
 CORS(app)
 
+
 @app.after_request
 def after_request(response):
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
@@ -18,21 +19,20 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
-db_drop_and_create_all()
 
-## ROUTES
-'''
-@TODO implement endpoint
-    GET /drinks
-        it is a public endpoint
-        it contains only the short data representation
-    returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
-        or appropriate status code indicating reason for failure
-'''
+db_drop_and_create_all()
 
 
 @app.route('/drinks', methods=['GET'])
 def get_drinks():
+    """
+        GET /drinks
+            it is a public endpoint
+            it contains only the short data representation
+        returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
+            or appropriate status code indicating reason for failure
+    """
+
     response = {
         'drinks': [],
         'success': False
@@ -51,13 +51,32 @@ def get_drinks():
 
 
 '''
-@TODO implement endpoint
     GET /drinks-detail
-        it should require the 'get:drinks-detail' permission
-        it should contain the drink.long() data representation
+        it requires the 'get:drinks-detail' permission
+        it contains the long data representation
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
+
+
+@app.route('/drinks-detail', methods=['GET'])
+def get_drinks_detail():
+    response = {
+        'drinks': [],
+        'success': False
+    }
+
+    try:
+        drinks = Drink.query.all()
+        short_representation = [drink.long() for drink in drinks]
+
+        response['drinks'] = short_representation
+        response['success'] = True
+    except:
+        abort(404)
+
+    return jsonify(response)
+
 
 '''
 @TODO implement endpoint
@@ -92,19 +111,29 @@ def get_drinks():
         or appropriate status code indicating reason for failure
 '''
 
-## Error Handling
-'''
-Example error handling for unprocessable entity
-'''
-
 
 @app.errorhandler(422)
 def unprocessable(error):
+    """"
+        Unable to process an understood request
+    """
     return jsonify({
         "success": False,
         "error": 422,
-        "message": "unprocessable"
+        "message": "Unprocessable"
     }), 422
+
+
+@app.errorhandler(404)
+def not_found(error):
+    """"
+        Requested element not found
+    """
+    return jsonify({
+        "success": False,
+        "error": 404,
+        "message": "Not Found"
+    }), 404
 
 
 '''
