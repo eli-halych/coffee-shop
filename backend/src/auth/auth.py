@@ -13,33 +13,63 @@ AUTH0_DOMAIN = config_vars['auth0_domain']
 ALGORITHMS = config_vars['algorithms']
 API_AUDIENCE = config_vars['api_audience']
 
-## AuthError Exception
-'''
-AuthError Exception
-A standardized way to communicate auth failure modes
-'''
-
 
 class AuthError(Exception):
+    """
+        A standardized way to communicate auth failure modes
+    """
+
     def __init__(self, error, status_code):
         self.error = error
         self.status_code = status_code
 
 
-## Auth Header
-
-'''
-@TODO implement get_token_auth_header() method
-    it should attempt to get the header from the request
-        it should raise an AuthError if no header is present
-    it should attempt to split bearer and the token
-        it should raise an AuthError if the header is malformed
-    return the token part of the header
-'''
-
-
 def get_token_auth_header():
-    raise Exception('Not Implemented')
+    """
+        it attempts to get the header from the request
+            it raises an AuthError if no header is present
+        it attempts to split bearer and the token
+            it raises an AuthError if the header is malformed
+
+        :return:
+    """
+    error = {
+        'code': '',
+        'description': ''
+    }
+    authorization = request.headers.get('Authorization', None)
+
+    if not authorization:
+        error['code'] = 'authorization_header_missing'
+        error['description'] = 'Authorization header is expected.'
+        raise AuthError(error, 401)
+
+    parts = authorization.split()
+
+    if parts[0].lower() != 'bearer':
+
+        # parts[0] expected: bearer
+        error['code'] = 'invalid_header'
+        error['description'] = 'Authorization header must start with "Bearer".'
+        raise AuthError(error, 401)
+
+    elif len(parts) == 1:
+
+        # parts[1] expected: token
+        error['code'] = 'invalid_header'
+        error['description'] = 'Token not found.'
+        raise AuthError(error, 401)
+
+    elif len(parts) > 2:
+
+        # len(parts) expected: 2
+        error['code'] = 'invalid_header'
+        error['description'] = 'Authorization header must be bearer token.'
+        raise AuthError(error, 401)
+
+    token = parts[1]
+
+    return token
 
 
 '''
