@@ -16,7 +16,7 @@ CORS(app)
 def after_request(response):
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
     response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
-    response.headers.add('Access-Control-Allow-Origin', '*')
+    # response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
 
@@ -41,11 +41,10 @@ def get_drinks():
     try:
         drinks = Drink.query.all()
         short_representation = [drink.short() for drink in drinks]
-
         response['drinks'] = short_representation
         response['success'] = True
     except:
-        abort(404)
+        abort(404)  # not found
 
     return jsonify(response)
 
@@ -59,7 +58,7 @@ def get_drinks_detail():
         returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
             or appropriate status code indicating reason for failure
     """
-    
+
     response = {
         'drinks': [],
         'success': False
@@ -72,20 +71,50 @@ def get_drinks_detail():
         response['drinks'] = short_representation
         response['success'] = True
     except:
-        abort(404)
+        abort(404)  # not found
 
     return jsonify(response)
 
 
-'''
-@TODO implement endpoint
-    POST /drinks
-        it should create a new row in the drinks table
-        it should require the 'post:drinks' permission
-        it should contain the drink.long() data representation
-    returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
-        or appropriate status code indicating reason for failure
-'''
+@app.route('/drinks', methods=['POST'])
+def post_drink():
+    """
+        POST /drinks
+            it creates a new row in the drinks table
+            it requires the 'post:drinks' permission
+            it contains the long data representation
+        returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
+            or appropriate status code indicating reason for failure
+    """
+    data = {}
+    response = {
+        'drinks': [],
+        'success': False
+    }
+
+    try:
+        data = json.loads(request.data)
+    except:
+        abort(400)  # bad request
+
+    try:
+        recipe = data['recipe']  # must be a list od dictionaries
+        title = data['title']
+
+        drink = Drink(
+            title=title,
+            recipe=json.dumps(recipe)
+        )
+        drink.insert()
+
+        response['drinks'] = drink.long()
+        response['success'] = True
+        response['drink_id'] = drink.id
+    except:
+        abort(422)  # unprocessable
+
+    return jsonify(response)
+
 
 '''
 @TODO implement endpoint
