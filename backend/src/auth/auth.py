@@ -86,7 +86,6 @@ def check_permissions(permission, payload):
     error = {'code': '', 'description': ''}
 
     if permission not in payload['permissions']:
-
         # expects valid permissions
         error['code'] = 'invalid_permission'
         error['description'] = 'Access forbidden.'
@@ -191,7 +190,6 @@ def requires_auth(permission=''):
     def requires_auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            print(permission)
             token = get_token_auth_header()
             payload = verify_decode_jwt(token)
             check_permissions(permission, payload)

@@ -95,7 +95,6 @@ def post_drink(payload):
 
     try:
         data = json.loads(request.data)
-        print(data)
     except:
         abort(400)  # bad request
 
