@@ -19,8 +19,8 @@ Jessica's notes:
 ## Logic and Views
 For detailed documentations, setup and requirements refer to (server and client are separate):
 
-1. [`./backend/`](./backend/README.md)
-2. [`./frontend/`](./frontend/README.md)
+1. [`./backend/`](./backend/)
+2. [`./frontend/`](./frontend/)
 
 ## About the Stack
 
