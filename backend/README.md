@@ -8,7 +8,7 @@
 3. [When are errors expected](#when-are-errors-expected)
 4. [Endpoints](#endpoints)
 5. [Endpoint description](#endpoint-description)
-6. [Testing endpoints](#testing-endpoints-with-postmanhttpsgetpostmancom)
+6. [Testing endpoints with Postman](#testing-endpoints-with-postmanhttpsgetpostmancom)
 
 - #### Setup Auth0
 
