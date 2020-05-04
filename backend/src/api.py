@@ -50,7 +50,8 @@ def get_drinks():
 
 
 @app.route('/drinks-detail', methods=['GET'])
-def get_drinks_detail():
+@requires_auth('get:drinks-detail')
+def get_drinks_detail(payload):
     """
         GET /drinks-detail
             it requires the 'get:drinks-detail' permission
@@ -58,7 +59,6 @@ def get_drinks_detail():
         returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
             or appropriate status code indicating reason for failure
     """
-
     response = {
         'drinks': [],
         'success': False
@@ -77,7 +77,8 @@ def get_drinks_detail():
 
 
 @app.route('/drinks', methods=['POST'])
-def post_drink():
+@requires_auth('post:drinks')
+def post_drink(payload):
     """
         POST /drinks
             it creates a new row in the drinks table
@@ -117,7 +118,8 @@ def post_drink():
 
 
 @app.route('/drinks/<drink_id>', methods=['PATCH'])
-def update_drink(drink_id):
+@requires_auth('patch:drinks')
+def update_drink(payload, drink_id):
     """
         PATCH /drinks/<drink_id>
         where <drink_id> is the existing model id
@@ -165,7 +167,8 @@ def update_drink(drink_id):
 
 
 @app.route('/drinks/<drink_id>', methods=['DELETE'])
-def delete_drink(drink_id):
+@requires_auth('delete:drinks')
+def delete_drink(payload, drink_id):
     """
         DELETE /drinks/<id>
             where <id> is the existing model id
@@ -207,7 +210,7 @@ def unprocessable(error):
     return jsonify({
         "success": False,
         "error": 422,
-        "message": "Unprocessable"
+        "message": str(error)
     }), 422
 
 
@@ -219,27 +222,41 @@ def not_found(error):
     return jsonify({
         "success": False,
         "error": 404,
-        "message": "Not Found"
+        "message": str(error)
     }), 404
 
 
-'''
-@TODO implement error handlers using the @app.errorhandler(error) decorator
-    each error handler should return (with approprate messages):
-             jsonify({
-                    "success": False, 
-                    "error": 404,
-                    "message": "resource not found"
-                    }), 404
+@app.errorhandler(400)
+def not_found(error):
+    """"
+        Bad request.
+    """
+    return jsonify({
+        "success": False,
+        "error": 400,
+        "message": str(error)
+    }), 400
 
-'''
 
-'''
-@TODO implement error handler for 404
-    error handler should conform to general task above 
-'''
+@app.errorhandler(401)
+def not_found(error):
+    """"
+        Authorized access.
+    """
+    return jsonify({
+        "success": False,
+        "error": 401,
+        "message": str(error)
+    }), 401
 
-'''
-@TODO implement error handler for AuthError
-    error handler should conform to general task above 
-'''
+
+@app.errorhandler(403)
+def not_found(error):
+    """"
+        Forbidden actions.
+    """
+    return jsonify({
+        "success": False,
+        "error": 403,
+        "message": str(error)
+    }), 403
