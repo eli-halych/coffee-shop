@@ -8,7 +8,7 @@
 3. [When are errors expected](#when-are-errors-expected)
 4. [Endpoints](#endpoints)
 5. [Endpoint description](#endpoint-description)
-6. [Testing endpoints with Postman](#testing-endpoints-with-postmanhttpsgetpostmancom)
+6. [Testing endpoints](#testing-endpoints)
 
 - #### Setup Auth0
 
@@ -173,7 +173,8 @@ API_AUDIENCE=
     }
 ```
 
-- #### Testing endpoints with [Postman](https://getpostman.com). 
+- #### Testing endpoints
+    - (if not done yet) Install [Postman](https://getpostman.com). 
     - (if not done yet) Register 2 users - assign the Barista role to one and Manager role to the other.
     - Sign into each account and make note of the JWT.
     - Import the postman collection `./starter_code/backend/udacity-fsnd-udaspicelatte.postman_collection.json`
