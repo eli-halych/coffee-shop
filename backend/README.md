@@ -8,6 +8,7 @@
 3. [When are errors expected](#when-are-errors-expected)
 4. [Endpoints](#endpoints)
 5. [Endpoint description](#endpoint-description)
+6. [Testing endpoints](#testing-endpoints-with-postmanhttpsgetpostmancom)
 
 - #### Setup Auth0
 
@@ -28,13 +29,6 @@
         - can `get:drinks-detail`
     - Manager
         - can perform all actions
-7. Test your endpoints with [Postman](https://getpostman.com). 
-    - Register 2 users - assign the Barista role to one and Manager role to the other.
-    - Sign into each account and make note of the JWT.
-    - Import the postman collection `./starter_code/backend/udacity-fsnd-udaspicelatte.postman_collection.json`
-    - Right-clicking the collection folder for barista and manager, navigate to the authorization tab, and including the JWT in the token field (you should have noted these JWTs).
-    - Run the collection and correct any errors.
-    - Export the collection overwriting the one we've included so that we have your proper JWTs during review!
 
 ##### NOTE: Config variables should be put in file config.properties in the ./backend/ folder and have a form:
 ```properties
@@ -178,3 +172,10 @@ API_AUDIENCE=
       "deleted": drink_id
     }
 ```
+
+- #### Testing endpoints with [Postman](https://getpostman.com). 
+    - (if not done yet) Register 2 users - assign the Barista role to one and Manager role to the other.
+    - Sign into each account and make note of the JWT.
+    - Import the postman collection `./starter_code/backend/udacity-fsnd-udaspicelatte.postman_collection.json`
+    - Right-clicking the collection folder for barista and manager, navigate to the authorization tab, and including the JWT in the token field (you should have noted these JWTs).
+    - Run the collection and correct any errors.
