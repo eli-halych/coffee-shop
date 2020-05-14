@@ -50,7 +50,7 @@ API_AUDIENCE=
 - ###### When are errors expected
 ```
 1. 400 - Request body is malformed
-2. 401 - JWT cannot be verified or Authorization header is anvalid
+2. 401 - JWT cannot be verified or Authorization header is invalid
 3. 403 - No permission in JWT to access an endpoint
 4. 404 - Requested resource is not found
 5. 422 - Request fails to succeed
